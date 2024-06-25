@@ -20,9 +20,22 @@ ggpairs(stars,col=1:4)
 # First very basic idea, use all the numerical features as predictors.
 # Let's fit a multinomial logistic regression to the data
 
-stars$Type <- as.factor(stars$Type)
+# Set a seed for reproducibility
+set.seed(123)
 
-model <- multinom(Type ~ stars$Temperature + stars$L + stars$R + stars$A_M, data=stars)
+# Define the splitting ratio
+splitRatio <- 0.5
+
+# Create a randomized index
+sampleIndex <- sample(1:nrow(stars), size = splitRatio * nrow(stars))
+
+# Split the data
+trainData <- stars[sampleIndex, ]
+testData <- stars[-sampleIndex, ]
+
+trainData$Type <- as.factor(trainData$Type)
+
+model <- multinom(trainData$Type ~ trainData$Temperature + trainData$L + trainData$R + trainData$A_M, data=trainData)
 summary(model)
 
 # Goodness of Fit
@@ -30,9 +43,9 @@ aic <- AIC(model)
 bic <- BIC(model)
 
 # Train and Test Error
-pred <- predict(model,newdata=stars)
+pred <- predict(model,newdata=testData)
 
-conf_matrix <- table(pred,stars$Type)
+conf_matrix <- table(pred,testData$Type)
 print(conf_matrix)
 
 training_error <- 1 - sum(diag(conf_matrix)) / sum(conf_matrix)
