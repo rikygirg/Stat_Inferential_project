@@ -11,7 +11,7 @@ library(dplyr)
 stars <- read.csv("new_stars.csv")
 attach(stars)
 
-df <- data.frame(lum = log(stars$L), temp = log(stars$Temperature), radius = stars$R, class = stars$Type)
+df <- data.frame(lum = log(stars$L), temp = log(stars$Temperature), radius = log(stars$R), class = stars$Type)
 
 #ggpairs(stars,col=c(1:4),aes(col=Type))
 
@@ -24,7 +24,7 @@ ggplot(data=df,mapping=aes(x=temp, y=lum, color=class))+
               color="Stellar Class")
 
 
-ggplot(data=df,mapping=aes(x=temp, y=R, color=class))+
+ggplot(data=df,mapping=aes(x=temp, y=radius, color=class))+
   geom_point() + 
   scale_color_brewer(palette="Set1") + # You can change the palette as needed
   labs(title="Temperature vs Radius",
@@ -36,7 +36,7 @@ ggplot(data=df,mapping=aes(x=temp, y=R, color=class))+
 stars_nohyper <- stars[which(stars$Type!="Hyper Giants"),]
 df_nohyper = df[df$class!="Hyper Giants",]
 
-ggplot(data=df_nohyper,mapping=aes(x=df_nohyper$temp, y=df_nohyper$R, color=df_nohyper$class))+
+ggplot(data=df_nohyper,mapping=aes(x=temp, y=radius, color=class))+
   geom_point() + 
   scale_color_brewer(palette="Set1") + # You can change the palette as needed
   labs(title="Temperature vs Radius",
@@ -56,6 +56,7 @@ sigma = 5.67*10^-8
 mod <- lm(L ~ (R^2)*(Temperature^4)+0,data = M)
 summary(mod)
 
+plot(mod$fitted.values,mod$residuals)
 
 shapiro.test(mod$residuals)
 par(mfrow=c(1,2))
