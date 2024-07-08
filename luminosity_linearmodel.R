@@ -26,8 +26,14 @@ mod_nelev <- lm(logL ~ logR+logT,subset = (lev<2*p/n))
 summary(mod_nelev)
 
 # residui standardizzati
-res_std = mod$residuals/mod$sigma
+res_std = mod$residuals/summary(mod)$sigma
 watchout = which(abs(res_std)>2)
+res_watchout = res_std[watchout]
+
+mod_std <- lm(logL ~ logR+logT,subset = (res_std<2))
+summary(mod_std)
+
+shapiro.test(mod_std$residuals)
 
 
 plot(mod$fitted.values,mod$residuals)
