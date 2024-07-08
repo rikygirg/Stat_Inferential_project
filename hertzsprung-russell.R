@@ -47,11 +47,25 @@ ggplot(data=df_nohyper,mapping=aes(x=temp, y=radius, color=class))+
 # sigma = 5.67*10^-8
 # L = 4*pi*R^2*sigma*T^4
 
+mod3 <- lm(L ~ R+Temperature,data=df)
+summary(mod3)
+
 # Per il momento, limitiamoci alla main sequence
 M <- stars[which(stars$Type=="Main Sequence"),]
 
 pi = 3.141592
 sigma = 5.67*10^-8
+
+mod1 <- lm(L ~ R+Temperature,data=M)
+summary(mod1)
+
+Rquad = R^2
+Tempquart = Temperature^4
+
+mod4 <- lm(L~Rquad:Tempquart,data=M)
+
+mod2 <- lm(L~I(R^2):I(Temperature^4)+0,data=M)
+summary(mod2)
 
 mod <- lm(L ~ (R^2)*(Temperature^4)+0,data = M)
 summary(mod)
