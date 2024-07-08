@@ -64,6 +64,33 @@ plot(mod$fitted.values, lev, main = "Leverages", pch = 16, col = "black")
 abline(h = 2 * p / n, lty = 2, col = "red")
 points(mod$fitted.values[watchout_idx], watchout_points, col = "red", pch = 16)
 
+# punti influenti?
+
+# decidiamo quali modello scegliere, rimuoviamo un po' di merda
+
+g_post_lev <- lm(log_l ~ log_r + log_t, data = stars, subset = (lev < 2 * p / n)) # nolint: line_length_linter.
+summary(g_post_lev)
+AIC(g_post_lev)
+
+g_post_rs <- lm(log_l ~ log_r + log_t, data = stars, subset = (abs(stud) < 2))
+summary(g_post_rs)
+AIC(g_post_rs)
+
+g_post_both <- lm(log_l ~ log_r + log_t, data = stars, subset = (abs(stud) < 2) | lev < 2 * p / n) # nolint : line_length_linter.
+summary(g_post_both)
+AIC(g_post_both)
+
+# scegliamo il modello senza residui studentizzati perche' ha AIC minore
+
+plot(g_post_rs, which = 1)
+shapiro.test(g_post_rs$residuals)
+
+plot(g_post_lev, which = 1)
+shapiro.test(g_post_lev$residuals)
+
+# box-cox transformation
+b <- boxcox(g_post_rs)
+lambda <- b$x[which.max(b$y)] # we can't cause the logarithm is not positive
 
 # summary(mod_nelev)
 
