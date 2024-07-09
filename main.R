@@ -5,6 +5,8 @@ library(car)
 library(plotly)
 library(dplyr)
 
+source("diagnostic.R")
+
 
 stars <- read.csv("new_stars.csv")
 attach(stars)
@@ -20,50 +22,16 @@ summary(mod)
 
 # DIAGNOSTICA
 # punti leva
-lev <- hatvalues(mod)
-p <- mod$rank
-n <- dim(stars)[1]
-
-watchout_points <- lev[which(lev > 2 * p / n)]
-watchout_idx <- seq_along(lev)[which(lev > 2 * p / n)]
-
-plot(mod$fitted.values, lev, main = "Leverages", pch = 16, col = "black")
-abline(h = 2 * p / n, lty = 2, col = "red")
-points(mod$fitted.values[watchout_idx], watchout_points, col = "red", pch = 16)
-
-# residui standardizzati
-gs <- summary(mod)
-res_std <- mod$res / gs$sigma
-
-watchout_idx_std <- which(abs(res_std) > 2)
-watchout_rstd <- res_std[watchout_idx_std]
-
-# residui studentizzati
-stud <- rstandard(mod)
-
-watchout_idx_rstu <- which(abs(stud) > 2)
-watchout_rstu <- stud[watchout_idx_rstu]
-
-# residui standarizzati e studentizzati si equivalgono
-
-plot(mod$fitted.values, stud, main = "Studentized Residuals", pch = 16)
-points(mod$fitted.values[watchout_idx_rstu], stud[watchout_idx_rstu], col = "pink", pch = 16)
-abline(h = c(-2, 2), lty = 2, col = "orange")
-
-# cooks distance?
 
 par(mfrow = c(1, 3))
-plot(mod$fitted.values, res_std, main = "Standardized Residuals", pch = 16)
-points(mod$fitted.values[watchout_idx_rstu], stud[watchout_idx_std], col = "green", pch = 16)
+leverage <- leverage_points(mod, TRUE)
+res_stu <- studentized_residuals(mod, TRUE)
+res_std <- standardized_residuals(mod, TRUE)
 
-plot(mod$fitted.values, stud, main = "Studentized Residuals", pch = 16)
-points(mod$fitted.values[watchout_idx_rstu], stud[watchout_idx_rstu], col = "pink", pch = 16)
-abline(h = c(-2, 2), lty = 2, col = "orange")
+# non colora i puntini, questo e' da fixare
+# residui standarizzati e studentizzati si equivalgono
 
-plot(mod$fitted.values, lev, main = "Leverages", pch = 16, col = "black")
-abline(h = 2 * p / n, lty = 2, col = "red")
-points(mod$fitted.values[watchout_idx], watchout_points, col = "red", pch = 16)
-
+# cooks distance?
 # punti influenti?
 
 # decidiamo quali modello scegliere, rimuoviamo un po' di merda
@@ -87,26 +55,3 @@ shapiro.test(g_post_rs$residuals)
 
 plot(g_post_lev, which = 1)
 shapiro.test(g_post_lev$residuals)
-
-# box-cox transformation
-b <- boxcox(g_post_rs)
-lambda <- b$x[which.max(b$y)] # we can't cause the logarithm is not positive
-
-# summary(mod_nelev)
-
-# residui standardizzati
-# res_std <- mod$residuals / summary(mod)$sigma
-# watchout <- which(abs(res_std) > 2)
-# res_watchout <- res_std[watchout]
-
-# mod_std <- lm(logL ~ logR + logT, subset = (res_std < 2))
-# summary(mod_std)
-
-# shapiro.test(mod_std$residuals)
-
-
-# plot(mod$fitted.values, mod$residuals)
-# qqnorm(mod$residuals)
-# qqline(mod$residuals, col = "red")
-
-# shapiro.test(mod$residuals)
