@@ -9,7 +9,7 @@ attach(stars)
 my_colors = brewer.pal(6, 'Set2')
 
 par(mfrow=c(2,2))
-boxplot(stars$Temperature ~ stars$Type,col=my_colors)
+boxplot(stars$Radius ~ stars$Type,col=my_colors)
 boxplot(stars$L ~ stars$Type,col=my_colors)
 boxplot(stars$R ~ stars$Type,col=my_colors)
 boxplot(stars$A_M ~ stars$Type,col=my_colors)

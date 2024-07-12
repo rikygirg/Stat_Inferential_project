@@ -7,6 +7,8 @@ leverage_points <- function(mod, flag) {
     p <- mod$rank
     n <- dim(stars)[1]
 
+    print(paste(2*p/n))
+    
     watchout_points <- lev[which(lev > 2 * p / n)]
     watchout_idx <- seq_along(lev)[which(lev > 2 * p / n)]
 
@@ -18,6 +20,7 @@ leverage_points <- function(mod, flag) {
 
     return(list(leverage = lev, p, n))
 }
+
 
 standardized_residuals <- function(mod, flag) {
     gs <- summary(mod)
@@ -49,4 +52,34 @@ studentized_residuals <- function(mod, flag) {
     }
 
     return(stud)
+}
+
+
+best_removal <- function(x, y, z, data) {
+    mod <- lm(z ~ x + y, data = data)
+    leverage <- leverage_points(mod, FALSE)
+    res_stu <- studentized_residuals(mod, FALSE)
+    res_std <- standardized_residuals(mod, FALSE)
+
+    lev <- leverage[1]
+    p <- leverage[2]
+    n <- leverage[3]
+
+    g_post_lev <- lm(z ~ x + y, data = data, subset(lev < 2 * p / n))
+    g_post_stu <- lm(z ~ x + y, data = data, subset(abs(res_stu) < 2))
+    g_post_std <- lm(z ~ x + y, data = data, subset(abs(res_std) < 2))
+
+    AIC_lev <- AIC(g_post_lev)
+    AIC_stu <- AIC(g_post_stu)
+    AIC_std <- AIC(g_post_std)
+
+    lowest_AIC <- min(AIC_lev, AIC_stu, AIC_std)
+
+    if (lowest_AIC == AIC_lev) {
+        print("Best Removal: Leverage Points")
+    } else if (lowest_AIC == AIC_stu) {
+        print("Best Removal: Studentized Residuals")
+    } else {
+        print("Best Removal: Standardized Residuals")
+    }
 }

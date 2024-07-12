@@ -15,6 +15,16 @@ df <- data.frame(lum = log(stars$L), temp = log(stars$Temperature), radius = log
 
 #ggpairs(stars,col=c(1:4),aes(col=Type))
 
+
+ggplot(data=stars,mapping=aes(x=Temperature, y=L, color=Type))+
+  geom_point() + 
+  scale_color_brewer(palette="Set1") + # You can change the palette as needed
+  labs(title="Hertzsprung-Russell Diagram",
+       x="Tempearature",
+       y="Luminosity",
+       color="Stellar Class")
+
+
 ggplot(data=df,mapping=aes(x=temp, y=lum, color=class))+
          geom_point() + 
          scale_color_brewer(palette="Set1") + # You can change the palette as needed
