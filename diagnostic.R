@@ -43,6 +43,7 @@ studentized_residuals <- function(mod, flag) {
     stud <- rstandard(mod)
 
     idx <- which(abs(stud) > 2)
+    print(paste(idx))
     watchout_rstu <- stud[idx]
 
     if (flag) {

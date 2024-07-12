@@ -33,6 +33,16 @@ ggplot(data=df,mapping=aes(x=temp, y=lum, color=class))+
               y="Luminosity",
               color="Stellar Class")
 
+main_seq = stars[which(stars$Type=="Main Sequence"),]
+main_seq_df = data.frame(lum = log(main_seq$L), temp = log(main_seq$Temperature), radius = log(main_seq$R), class = main_seq$Type)
+ggplot(data=main_seq_df,mapping=aes(x=radius, y=lum, color=class))+
+  geom_point() + 
+  scale_color_brewer(palette="Set1") + # You can change the palette as needed
+  labs(title="Hertzsprung-Russell Diagram",
+       x="Tempearature",
+       y="Luminosity",
+       color="Stellar Class")
+
 
 ggplot(data=df,mapping=aes(x=temp, y=radius, color=class))+
   geom_point() + 
