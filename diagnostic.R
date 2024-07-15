@@ -5,10 +5,8 @@
 leverage_points <- function(mod, flag) {
     lev <- hatvalues(mod)
     p <- mod$rank
-    n <- dim(stars)[1]
+    n <- dim(model.matrix(mod))[1]
 
-    print(paste(2*p/n))
-    
     watchout_points <- lev[which(lev > 2 * p / n)]
     watchout_idx <- seq_along(lev)[which(lev > 2 * p / n)]
 
@@ -18,7 +16,7 @@ leverage_points <- function(mod, flag) {
         abline(h = 2 * p / n, lty = 2, col = "red")
     }
 
-    return(list(leverage = lev, p, n))
+    return(lev)
 }
 
 
@@ -43,7 +41,6 @@ studentized_residuals <- function(mod, flag) {
     stud <- rstandard(mod)
 
     idx <- which(abs(stud) > 2)
-    print(paste(idx))
     watchout_rstu <- stud[idx]
 
     if (flag) {
@@ -83,4 +80,15 @@ best_removal <- function(x, y, z, data) {
     } else {
         print("Best Removal: Standardized Residuals")
     }
+}
+
+diagnostica <- function(model){
+    par(mfrow=c(1,2))
+    # omoscedasticita'
+    plot(model,which=1)
+    # normalita' dei residui
+    qqnorm(model$residuals)
+    qqline(model$residuals,col='red')
+    p_value <- shapiro.test(model$residuals)$p.value
+    print(paste("Shapiro Test = ",p_value))
 }
