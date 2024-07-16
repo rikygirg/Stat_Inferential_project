@@ -3,7 +3,7 @@ library(GGally)
 library(RColorBrewer)
 library(car)
 
-stars <- read.csv("stars.csv")
+stars <- read.csv("new_stars.csv")
 attach(stars)
 
 my_colors = brewer.pal(6, 'Set2')
