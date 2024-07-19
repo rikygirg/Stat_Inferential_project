@@ -1,4 +1,4 @@
-![Static Badge](https://img.shields.io/badge/:badgeContent)
+![Last Commit](https://img.shields.io/github/last-commit/rikygirg/Stat_Inferential_project)
 
 # Star Radiation Analysis
 This group project was developed during the Inferential Statistics course, held at Politecnico di Milano, during the 2nd Semester of 2024.
