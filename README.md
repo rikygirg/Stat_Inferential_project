@@ -1,3 +1,5 @@
+![Static Badge](https://img.shields.io/badge/:badgeContent)
+
 # Star Radiation Analysis
 This group project was developed during the Inferential Statistics course, held at Politecnico di Milano, during the 2nd Semester of 2024.
 Taught by professor [Anna Maria Paganoni](https://www.linkedin.com/in/anna-maria-paganoni-a85732267/), the course covered tools for inferential statistics and regression models.
